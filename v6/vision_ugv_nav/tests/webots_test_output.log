@@ -1,0 +1,7 @@
+WARNING: Could not listen to extern controllers and robot windows on port 1234. Cannot set the server in listen mode: The bound address is already in use. Using port 1235 instead. This could be caused by another running instance of Webots. You should use the '--port' option to start several instances of Webots.
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+WARNING: DEF DYNAMIC_OBSTACLE Solid > Physics : Both 'density' and 'mass' specified: the 'density' will be ignored.
+WARNING: DEF UGV Robot > HingeJoint "left_wheel" > Solid "left_wheel" > Physics : Both 'density' and 'mass' specified: the 'density' will be ignored.
+WARNING: DEF UGV Robot > HingeJoint "right_wheel" > Solid "right_wheel" > Physics : Both 'density' and 'mass' specified: the 'density' will be ignored.
+INFO: ugv_controller: Starting controller: python3 -u ugv_controller.py
+INFO: supervisor_controller: Starting controller: python3 -u supervisor_controller.py

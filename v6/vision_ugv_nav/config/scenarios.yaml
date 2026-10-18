@@ -1,0 +1,43 @@
+scenarios:
+  scenario_1:
+    name: "Scenario 1 - Normal Outdoor Navigation"
+    world_file: "outdoor_mission_default.wbt"
+    description: "Autonomous navigation from Point A to Point B across undulating dirt and grass terrain with static rock/tree obstacles."
+    start_pos: [-10.0, -8.0, 0.15]
+    goal_pos: [10.0, 8.0, 0.15]
+    dynamic_obstacle_enabled: false
+    gps_denied: true
+    difficulty: "Normal"
+
+  scenario_2:
+    name: "Scenario 2 - Sudden Dynamic Obstacle"
+    world_file: "outdoor_mission_obstacle.wbt"
+    description: "Sudden hazard enters the planned path. UGV must detect via vision, emergency decelerate, replan around obstacle, and resume course to Point B."
+    start_pos: [-10.0, -8.0, 0.15]
+    goal_pos: [10.0, 8.0, 0.15]
+    dynamic_obstacle_enabled: true
+    dynamic_trigger_distance: 4.5
+    dynamic_obstacle_velocity: [0.0, 0.4, 0.0]
+    gps_denied: true
+    difficulty: "High"
+
+  scenario_3:
+    name: "Scenario 3 - Complete GPS-Denied Navigation"
+    world_file: "outdoor_mission_gps_denied.wbt"
+    description: "Complete absence of satellite positioning. Continuous visual odometry, optical flow tracking, wheel encoders and IMU fusion."
+    start_pos: [-10.0, -8.0, 0.15]
+    goal_pos: [10.0, 8.0, 0.15]
+    dynamic_obstacle_enabled: false
+    gps_denied: true
+    strict_vo_evaluation: true
+    difficulty: "Hard"
+
+  scenario_4:
+    name: "Scenario 4 - Difficult Terrain & Narrow Canyon"
+    world_file: "outdoor_mission_rough.wbt"
+    description: "Complex outdoor environment featuring narrow passage, steep ditches, boulder fields, and non-traversable slopes requiring safety-first planning."
+    start_pos: [-11.0, -9.0, 0.15]
+    goal_pos: [11.0, 9.0, 0.15]
+    dynamic_obstacle_enabled: false
+    gps_denied: true
+    difficulty: "Extreme"

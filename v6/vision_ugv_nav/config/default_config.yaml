@@ -1,0 +1,79 @@
+robot:
+  track_width: 0.46          # meters between left and right wheels
+  wheel_radius: 0.095        # meters
+  max_wheel_velocity: 10.0   # rad/s
+  max_linear_velocity: 0.85  # m/s
+  min_linear_velocity: -0.30 # m/s
+  max_angular_velocity: 1.20 # rad/s
+  max_linear_accel: 0.80     # m/s^2
+  max_angular_accel: 2.0     # rad/s^2
+  collision_radius: 0.38     # meters
+  mass: 18.0                 # kg
+
+sensors:
+  time_step: 16              # ms (simulation step)
+  camera_name: "ugv_camera"
+  camera_width: 320
+  camera_height: 240
+  camera_fov: 1.2217         # radians (~70 deg)
+  range_finder_name: "ugv_range_finder"
+  range_finder_min: 0.15
+  range_finder_max: 12.0
+  imu_name: "ugv_imu"
+  gyro_name: "ugv_gyro"
+  left_motor_name: "left_wheel_motor"
+  right_motor_name: "right_wheel_motor"
+  left_sensor_name: "left_wheel_sensor"
+  right_sensor_name: "right_wheel_sensor"
+
+perception:
+  grid_resolution: 0.10      # meters per grid cell
+  grid_size_x: 6.0           # meters (+6m ahead)
+  grid_size_y: 6.0           # meters (+-3m lateral)
+  obstacle_inflation: 0.45   # meters safety buffer
+  traversability_threshold: 0.48
+  min_obstacle_height: 0.09  # meters above ground
+  max_step_height: 0.14      # meters traversable step
+  color_weight: 0.35
+  slope_weight: 0.65
+
+localization:
+  use_gps: false             # Strict GPS-denied navigation
+  vo_min_features: 40
+  vo_patch_size: 15
+  ekf_q_pos: 0.015
+  ekf_q_yaw: 0.005
+  ekf_r_vo: 0.05
+  ekf_r_enc: 0.02
+  ekf_r_imu: 0.008
+
+planning:
+  global_planner: "a_star"
+  local_planner: "dwa"
+  goal_tolerance: 0.65       # meters to consider goal reached
+  waypoint_lookahead: 1.5    # meters
+  dwa_predict_time: 2.2      # seconds
+  dwa_sim_steps: 12
+  dwa_v_samples: 9
+  dwa_w_samples: 17
+  dwa_weights:
+    heading: 0.20
+    clearance: 0.35
+    velocity: 0.20
+    traversability: 0.25
+  replan_cost_threshold: 0.70
+  stuck_timeout: 3.5         # seconds before recovery kicks in
+  recovery_reverse_time: 1.5 # seconds
+  recovery_turn_time: 1.8    # seconds
+
+supervisor:
+  mission_time_limit: 180.0  # seconds
+  start_point: [-10.0, -8.0, 0.15]
+  goal_point: [10.0, 8.0, 0.15]
+  sudden_obstacle_dist: 4.5  # trigger obstacle when robot is 4.5m away
+  max_score: 100.0
+
+dashboard:
+  host: "127.0.0.1"
+  port: 5005
+  stream_fps: 12

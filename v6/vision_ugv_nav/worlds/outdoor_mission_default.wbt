@@ -1,0 +1,1007 @@
+#VRML_SIM R2025a utf8
+
+WorldInfo {
+  info [
+    "Vision-Based Autonomous Navigation for UGV in Outdoor Environment"
+    "Scenario 1: GPS-Denied Challenge"
+  ]
+  title "Scenario 1 - Vision UGV Outdoor Navigation"
+  basicTimeStep 16
+  coordinateSystem "ENU"
+}
+
+Viewpoint {
+  orientation 0.2501 0.5117 -0.8219 1.0729
+  position -3.5 -3.5 2.5
+  follow "UGV"
+  followSmoothness 0.2
+}
+
+Background {
+  skyColor [ 0.42 0.72 0.98 ]
+}
+
+DirectionalLight {
+  ambientIntensity 0.65
+  color 1.0 0.98 0.92
+  direction 0.4 0.3 -0.85
+  intensity 2.8
+  castShadows TRUE
+}
+
+PointLight {
+  attenuation 0 0 0.02
+  color 0.95 0.98 1.0
+  location 0 0 16
+  intensity 1.8
+}
+
+# Main Outdoor Terrain
+DEF TERRAIN_GROUND Solid {
+  translation 0 0 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.28 0.58 0.22
+        baseColorMap ImageTexture { url [ "../assets/textures/grass.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 24 24 }
+      }
+      geometry Box { size 38 38 0.1 }
+    }
+  ]
+  name "terrain_ground"
+  boundingObject Box { size 38 38 0.1 }
+  locked TRUE
+}
+
+DEF WALL_NORTH Solid {
+  translation 0 19 0.5
+  children [
+    Shape {
+      appearance PBRAppearance { baseColor 0.48 0.42 0.35 roughness 0.9 }
+      geometry Box { size 38 0.4 1.0 }
+    }
+  ]
+  name "wall_north"
+  boundingObject Box { size 38 0.4 1.0 }
+  locked TRUE
+}
+
+DEF WALL_SOUTH Solid {
+  translation 0 -19 0.5
+  children [
+    Shape {
+      appearance PBRAppearance { baseColor 0.48 0.42 0.35 roughness 0.9 }
+      geometry Box { size 38 0.4 1.0 }
+    }
+  ]
+  name "wall_south"
+  boundingObject Box { size 38 0.4 1.0 }
+  locked TRUE
+}
+
+DEF WALL_EAST Solid {
+  translation 19 0 0.5
+  children [
+    Shape {
+      appearance PBRAppearance { baseColor 0.48 0.42 0.35 roughness 0.9 }
+      geometry Box { size 0.4 38 1.0 }
+    }
+  ]
+  name "wall_east"
+  boundingObject Box { size 0.4 38 1.0 }
+  locked TRUE
+}
+
+DEF WALL_WEST Solid {
+  translation -19 0 0.5
+  children [
+    Shape {
+      appearance PBRAppearance { baseColor 0.48 0.42 0.35 roughness 0.9 }
+      geometry Box { size 0.4 38 1.0 }
+    }
+  ]
+  name "wall_west"
+  boundingObject Box { size 0.4 38 1.0 }
+  locked TRUE
+}
+
+# Traversable Dirt Path Segments
+DEF PATH_SEG_0 Solid {
+  translation -8.500 -7.000 0.055
+  rotation 0 0 1 0.5880
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.58 0.42
+        baseColorMap ImageTexture { url [ "../assets/textures/dirt.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 2 8 }
+      }
+      geometry Box { size 3.906 2.2 0.015 }
+    }
+  ]
+  name "path_segment_0"
+}
+
+DEF PATH_SEG_1 Solid {
+  translation -5.500 -4.750 0.055
+  rotation 0 0 1 0.6947
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.58 0.42
+        baseColorMap ImageTexture { url [ "../assets/textures/dirt.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 2 8 }
+      }
+      geometry Box { size 4.205 2.2 0.015 }
+    }
+  ]
+  name "path_segment_1"
+}
+
+DEF PATH_SEG_2 Solid {
+  translation -2.500 -2.250 0.055
+  rotation 0 0 1 0.6947
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.58 0.42
+        baseColorMap ImageTexture { url [ "../assets/textures/dirt.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 2 8 }
+      }
+      geometry Box { size 4.205 2.2 0.015 }
+    }
+  ]
+  name "path_segment_2"
+}
+
+DEF PATH_SEG_3 Solid {
+  translation 0.500 0.500 0.055
+  rotation 0 0 1 0.7854
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.58 0.42
+        baseColorMap ImageTexture { url [ "../assets/textures/dirt.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 2 8 }
+      }
+      geometry Box { size 4.543 2.2 0.015 }
+    }
+  ]
+  name "path_segment_3"
+}
+
+DEF PATH_SEG_4 Solid {
+  translation 3.500 3.250 0.055
+  rotation 0 0 1 0.6947
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.58 0.42
+        baseColorMap ImageTexture { url [ "../assets/textures/dirt.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 2 8 }
+      }
+      geometry Box { size 4.205 2.2 0.015 }
+    }
+  ]
+  name "path_segment_4"
+}
+
+DEF PATH_SEG_5 Solid {
+  translation 6.500 5.500 0.055
+  rotation 0 0 1 0.5880
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.58 0.42
+        baseColorMap ImageTexture { url [ "../assets/textures/dirt.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 2 8 }
+      }
+      geometry Box { size 3.906 2.2 0.015 }
+    }
+  ]
+  name "path_segment_5"
+}
+
+DEF PATH_SEG_6 Solid {
+  translation 9.000 7.250 0.055
+  rotation 0 0 1 0.6435
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.58 0.42
+        baseColorMap ImageTexture { url [ "../assets/textures/dirt.png" ] }
+        roughness 0.85
+        metalness 0.0
+        textureTransform TextureTransform { scale 2 8 }
+      }
+      geometry Box { size 2.800 2.2 0.015 }
+    }
+  ]
+  name "path_segment_6"
+}
+
+# Start Marker A (Glowing Green)
+DEF BEACON_A Solid {
+  translation -10.0 -8.0 0.06
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.1 0.95 0.3
+        emissiveColor 0.1 0.95 0.3
+        roughness 0.2
+      }
+      geometry Cylinder { radius 0.9 height 0.02 }
+    }
+    # Flagpole
+    Pose {
+      translation 0 0 0.75
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.85 0.85 0.85 metalness 0.8 }
+          geometry Cylinder { radius 0.025 height 1.5 }
+        }
+      ]
+    }
+    Pose {
+      translation 0.25 0 1.35
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.1 0.95 0.3 emissiveColor 0.1 0.95 0.3 }
+          geometry Box { size 0.5 0.02 0.3 }
+        }
+      ]
+    }
+  ]
+  name "beacon_start_a"
+}
+
+# Goal Marker B (Glowing Blue)
+DEF BEACON_B Solid {
+  translation 10.0 8.0 0.06
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.15 0.75 1.0
+        emissiveColor 0.15 0.75 1.0
+        roughness 0.2
+      }
+      geometry Cylinder { radius 0.9 height 0.02 }
+    }
+    Pose {
+      translation 0 0 0.75
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.85 0.85 0.85 metalness 0.8 }
+          geometry Cylinder { radius 0.025 height 1.5 }
+        }
+      ]
+    }
+    Pose {
+      translation 0.25 0 1.35
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.15 0.75 1.0 emissiveColor 0.15 0.75 1.0 }
+          geometry Box { size 0.5 0.02 0.3 }
+        }
+      ]
+    }
+  ]
+  name "beacon_goal_b"
+}
+
+DEF ROCK_0 Solid {
+  translation -8.5 -4.5 0.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.375 height 0.800 }
+    }
+  ]
+  name "rock_0"
+  boundingObject Cylinder { radius 0.375 height 0.800 }
+}
+
+DEF ROCK_1 Solid {
+  translation -5.5 -7.5 0.45
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.425 height 0.900 }
+    }
+  ]
+  name "rock_1"
+  boundingObject Cylinder { radius 0.425 height 0.900 }
+}
+
+DEF ROCK_2 Solid {
+  translation -5.0 -1.8 0.5
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.450 height 1.000 }
+    }
+  ]
+  name "rock_2"
+  boundingObject Cylinder { radius 0.450 height 1.000 }
+}
+
+DEF ROCK_3 Solid {
+  translation -2.5 -4.8 0.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.350 height 0.800 }
+    }
+  ]
+  name "rock_3"
+  boundingObject Cylinder { radius 0.350 height 0.800 }
+}
+
+DEF ROCK_4 Solid {
+  translation -2.0 0.8 0.45
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.400 height 0.900 }
+    }
+  ]
+  name "rock_4"
+  boundingObject Cylinder { radius 0.400 height 0.900 }
+}
+
+DEF ROCK_5 Solid {
+  translation 0.8 -2.5 0.5
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.425 height 1.000 }
+    }
+  ]
+  name "rock_5"
+  boundingObject Cylinder { radius 0.425 height 1.000 }
+}
+
+DEF ROCK_6 Solid {
+  translation 1.0 3.8 0.45
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.400 height 0.900 }
+    }
+  ]
+  name "rock_6"
+  boundingObject Cylinder { radius 0.400 height 0.900 }
+}
+
+DEF ROCK_7 Solid {
+  translation 3.8 0.8 0.55
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.475 height 1.100 }
+    }
+  ]
+  name "rock_7"
+  boundingObject Cylinder { radius 0.475 height 1.100 }
+}
+
+DEF ROCK_8 Solid {
+  translation 3.5 6.0 0.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.375 height 0.800 }
+    }
+  ]
+  name "rock_8"
+  boundingObject Cylinder { radius 0.375 height 0.800 }
+}
+
+DEF ROCK_9 Solid {
+  translation 6.5 3.0 0.5
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.450 height 1.000 }
+    }
+  ]
+  name "rock_9"
+  boundingObject Cylinder { radius 0.450 height 1.000 }
+}
+
+DEF ROCK_10 Solid {
+  translation 6.0 7.8 0.45
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.400 height 0.900 }
+    }
+  ]
+  name "rock_10"
+  boundingObject Cylinder { radius 0.400 height 0.900 }
+}
+
+DEF ROCK_11 Solid {
+  translation 8.5 4.0 0.5
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.425 height 1.000 }
+    }
+  ]
+  name "rock_11"
+  boundingObject Cylinder { radius 0.425 height 1.000 }
+}
+
+DEF ROCK_12 Solid {
+  translation -12.0 -3.0 0.6
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.550 height 1.200 }
+    }
+  ]
+  name "rock_12"
+  boundingObject Cylinder { radius 0.550 height 1.200 }
+}
+
+DEF ROCK_13 Solid {
+  translation 12.0 2.0 0.6
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.550 height 1.200 }
+    }
+  ]
+  name "rock_13"
+  boundingObject Cylinder { radius 0.550 height 1.200 }
+}
+
+DEF ROCK_14 Solid {
+  translation -3.0 8.0 0.55
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.500 height 1.100 }
+    }
+  ]
+  name "rock_14"
+  boundingObject Cylinder { radius 0.500 height 1.100 }
+}
+
+DEF ROCK_15 Solid {
+  translation 4.0 -9.0 0.55
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.52 0.48
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.500 height 1.100 }
+    }
+  ]
+  name "rock_15"
+  boundingObject Cylinder { radius 0.500 height 1.100 }
+}
+
+DEF TREE_0 Solid {
+  translation -7.5 -2.0 1.2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.40 0.28 0.18
+        baseColorMap ImageTexture { url [ "../assets/textures/bark.png" ] }
+        roughness 0.9
+      }
+      geometry Cylinder { radius 0.350 height 2.400 }
+    }
+    Pose { translation 0 0 0.960 children [
+      Shape {
+        appearance PBRAppearance { baseColor 0.22 0.55 0.18 roughness 0.8 }
+        geometry Sphere { radius 1.050 }
+      }
+    ]}
+  ]
+  name "tree_0"
+  boundingObject Cylinder { radius 0.350 height 2.400 }
+}
+
+DEF TREE_1 Solid {
+  translation -3.5 3.5 1.3
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.40 0.28 0.18
+        baseColorMap ImageTexture { url [ "../assets/textures/bark.png" ] }
+        roughness 0.9
+      }
+      geometry Cylinder { radius 0.400 height 2.600 }
+    }
+    Pose { translation 0 0 1.040 children [
+      Shape {
+        appearance PBRAppearance { baseColor 0.22 0.55 0.18 roughness 0.8 }
+        geometry Sphere { radius 1.200 }
+      }
+    ]}
+  ]
+  name "tree_1"
+  boundingObject Cylinder { radius 0.400 height 2.600 }
+}
+
+DEF TREE_2 Solid {
+  translation 0.5 6.5 1.25
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.40 0.28 0.18
+        baseColorMap ImageTexture { url [ "../assets/textures/bark.png" ] }
+        roughness 0.9
+      }
+      geometry Cylinder { radius 0.380 height 2.500 }
+    }
+    Pose { translation 0 0 1.000 children [
+      Shape {
+        appearance PBRAppearance { baseColor 0.22 0.55 0.18 roughness 0.8 }
+        geometry Sphere { radius 1.140 }
+      }
+    ]}
+  ]
+  name "tree_2"
+  boundingObject Cylinder { radius 0.380 height 2.500 }
+}
+
+DEF TREE_3 Solid {
+  translation 4.5 7.5 1.35
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.40 0.28 0.18
+        baseColorMap ImageTexture { url [ "../assets/textures/bark.png" ] }
+        roughness 0.9
+      }
+      geometry Cylinder { radius 0.420 height 2.700 }
+    }
+    Pose { translation 0 0 1.080 children [
+      Shape {
+        appearance PBRAppearance { baseColor 0.22 0.55 0.18 roughness 0.8 }
+        geometry Sphere { radius 1.260 }
+      }
+    ]}
+  ]
+  name "tree_3"
+  boundingObject Cylinder { radius 0.420 height 2.700 }
+}
+
+DEF TREE_4 Solid {
+  translation 7.5 1.5 1.25
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.40 0.28 0.18
+        baseColorMap ImageTexture { url [ "../assets/textures/bark.png" ] }
+        roughness 0.9
+      }
+      geometry Cylinder { radius 0.400 height 2.500 }
+    }
+    Pose { translation 0 0 1.000 children [
+      Shape {
+        appearance PBRAppearance { baseColor 0.22 0.55 0.18 roughness 0.8 }
+        geometry Sphere { radius 1.200 }
+      }
+    ]}
+  ]
+  name "tree_4"
+  boundingObject Cylinder { radius 0.400 height 2.500 }
+}
+
+DEF TREE_5 Solid {
+  translation -1.5 -6.5 1.15
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.40 0.28 0.18
+        baseColorMap ImageTexture { url [ "../assets/textures/bark.png" ] }
+        roughness 0.9
+      }
+      geometry Cylinder { radius 0.360 height 2.300 }
+    }
+    Pose { translation 0 0 0.920 children [
+      Shape {
+        appearance PBRAppearance { baseColor 0.22 0.55 0.18 roughness 0.8 }
+        geometry Sphere { radius 1.080 }
+      }
+    ]}
+  ]
+  name "tree_5"
+  boundingObject Cylinder { radius 0.360 height 2.300 }
+}
+
+DEF TREE_6 Solid {
+  translation 5.5 -4.5 1.2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.40 0.28 0.18
+        baseColorMap ImageTexture { url [ "../assets/textures/bark.png" ] }
+        roughness 0.9
+      }
+      geometry Cylinder { radius 0.380 height 2.400 }
+    }
+    Pose { translation 0 0 0.960 children [
+      Shape {
+        appearance PBRAppearance { baseColor 0.22 0.55 0.18 roughness 0.8 }
+        geometry Sphere { radius 1.140 }
+      }
+    ]}
+  ]
+  name "tree_6"
+  boundingObject Cylinder { radius 0.380 height 2.400 }
+}
+
+# Prominent Centerline Obstacles Placed Directly in Path Corridor
+DEF ROCK_CENTER_1 Solid {
+  translation -4.8 -3.8 0.40
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.52 0.48 0.44
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.88
+      }
+      geometry Cylinder { radius 0.52 height 0.80 }
+    }
+    Pose {
+      translation 0.15 0.1 0.42
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.48 0.45 0.40
+            baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+            roughness 0.88
+          }
+          geometry Sphere { radius 0.28 }
+        }
+      ]
+    }
+  ]
+  name "rock_center_1"
+  boundingObject Cylinder { radius 0.52 height 0.80 }
+}
+
+DEF ROCK_CENTER_2 Solid {
+  translation 0.0 0.0 0.40
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.50 0.46
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.85
+      }
+      geometry Cylinder { radius 0.50 height 0.80 }
+    }
+    Pose {
+      translation -0.12 0.08 0.42
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.50 0.46 0.42
+            baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+            roughness 0.85
+          }
+          geometry Sphere { radius 0.30 }
+        }
+      ]
+    }
+  ]
+  name "rock_center_2"
+  boundingObject Cylinder { radius 0.50 height 0.80 }
+}
+
+DEF ROCK_CENTER_3 Solid {
+  translation 4.5 4.0 0.42
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.50 0.47 0.43
+        baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+        roughness 0.88
+      }
+      geometry Cylinder { radius 0.52 height 0.84 }
+    }
+    Pose {
+      translation 0.1 0.12 0.44
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.45 0.42 0.38
+            baseColorMap ImageTexture { url [ "../assets/textures/rock.png" ] }
+            roughness 0.88
+          }
+          geometry Sphere { radius 0.28 }
+        }
+      ]
+    }
+  ]
+  name "rock_center_3"
+  boundingObject Cylinder { radius 0.52 height 0.84 }
+}
+
+# DYNAMIC SUDDEN OBSTACLE (Active Sudden Injection)
+DEF DYNAMIC_OBSTACLE Solid {
+  translation 0.5 -3.5 0.45
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.95 0.35 0.05
+        baseColorMap ImageTexture { url [ "../assets/textures/hazard.png" ] }
+        roughness 0.4
+      }
+      geometry Cylinder { radius 0.42 height 0.90 }
+    }
+    Pose {
+      translation 0 0 0.52
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 1 0.1 0.1 emissiveColor 1 0.1 0.1 }
+          geometry Sphere { radius 0.12 }
+        }
+      ]
+    }
+  ]
+  name "dynamic_obstacle"
+  boundingObject Cylinder { radius 0.42 height 0.90 }
+  physics Physics { mass 25.0 }
+}
+
+# AUTONOMOUS UNMANNED GROUND VEHICLE (UGV)
+DEF UGV Robot {
+  translation -10.0 -8.0 0.12
+  rotation 0 0 1 0.785
+  children [
+    Pose {
+      translation 0 0 0.08
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.22 0.35 0.25
+            roughness 0.4
+            metalness 0.6
+          }
+          geometry Box { size 0.55 0.36 0.16 }
+        }
+      ]
+    }
+    Pose {
+      translation 0.28 0 0.08
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.9 0.7 0.1
+            baseColorMap ImageTexture { url [ "../assets/textures/hazard.png" ] }
+            roughness 0.5
+          }
+          geometry Box { size 0.04 0.38 0.12 }
+        }
+      ]
+    }
+    Pose {
+      translation 0.18 0 0.26
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.15 0.15 0.15 metalness 0.8 }
+          geometry Cylinder { radius 0.02 height 0.20 }
+        }
+      ]
+    }
+    Pose {
+      translation 0.22 0 0.36
+      rotation 0 1 0 0.21
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.18 0.18 0.18 }
+          geometry Box { size 0.08 0.14 0.06 }
+        }
+        Camera {
+          name "ugv_camera"
+          translation 0.04 0 0
+          width 320
+          height 240
+          fieldOfView 1.2217
+        }
+        RangeFinder {
+          name "ugv_range_finder"
+          translation 0.04 0 0
+          width 320
+          height 240
+          fieldOfView 1.2217
+          minRange 0.15
+          maxRange 12.0
+        }
+      ]
+    }
+    # Left Flank Camera (+45 deg yaw)
+    Pose {
+      translation 0.20 0.08 0.36
+      rotation 0 0 1 0.785398
+      children [
+        Camera {
+          name "ugv_camera_left"
+          translation 0.02 0 0
+          width 320
+          height 240
+          fieldOfView 1.2217
+        }
+      ]
+    }
+    # Right Flank Camera (-45 deg yaw)
+    Pose {
+      translation 0.20 -0.08 0.36
+      rotation 0 0 1 -0.785398
+      children [
+        Camera {
+          name "ugv_camera_right"
+          translation 0.02 0 0
+          width 320
+          height 240
+          fieldOfView 1.2217
+        }
+      ]
+    }
+    # Rear Observation Camera (180 deg yaw)
+    Pose {
+      translation -0.22 0 0.28
+      rotation 0 0 1 3.14159
+      children [
+        Camera {
+          name "ugv_camera_rear"
+          translation -0.02 0 0
+          width 320
+          height 240
+          fieldOfView 1.2217
+        }
+      ]
+    }
+    InertialUnit { name "ugv_imu" }
+    Gyro { name "ugv_gyro" }
+    Accelerometer { name "ugv_accelerometer" }
+    HingeJoint {
+      jointParameters HingeJointParameters { axis 0 1 0 anchor 0 0.23 0 }
+      device [
+        RotationalMotor { name "left_wheel_motor" maxVelocity 10.0 maxTorque 25.0 }
+        PositionSensor { name "left_wheel_sensor" }
+      ]
+      endPoint Solid {
+        translation 0 0.23 0
+        rotation 1 0 0 1.5708
+        children [
+          DEF WHEEL_SHAPE Shape {
+            appearance PBRAppearance { baseColor 0.15 0.15 0.15 roughness 0.8 }
+            geometry Cylinder { radius 0.095 height 0.06 }
+          }
+        ]
+        name "left_wheel"
+        boundingObject USE WHEEL_SHAPE
+        physics Physics { mass 2.0 }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters { axis 0 1 0 anchor 0 -0.23 0 }
+      device [
+        RotationalMotor { name "right_wheel_motor" maxVelocity 10.0 maxTorque 25.0 }
+        PositionSensor { name "right_wheel_sensor" }
+      ]
+      endPoint Solid {
+        translation 0 -0.23 0
+        rotation 1 0 0 1.5708
+        children [ USE WHEEL_SHAPE ]
+        name "right_wheel"
+        boundingObject USE WHEEL_SHAPE
+        physics Physics { mass 2.0 }
+      }
+    }
+    Pose {
+      translation 0.22 0 -0.045
+      children [
+        DEF CASTER_SHAPE Shape {
+          appearance PBRAppearance { baseColor 0.35 0.35 0.35 metalness 0.9 }
+          geometry Sphere { radius 0.05 }
+        }
+      ]
+    }
+    Pose { translation -0.22 0 -0.045 children [ USE CASTER_SHAPE ] }
+  ]
+  name "UGV_ROBOT"
+  boundingObject Group {
+    children [
+      Pose { translation 0 0 0.08 children [ Box { size 0.55 0.36 0.16 } ] }
+      Pose { translation 0.22 0 -0.045 children [ Sphere { radius 0.05 } ] }
+      Pose { translation -0.22 0 -0.045 children [ Sphere { radius 0.05 } ] }
+    ]
+  }
+  physics Physics { density -1 mass 16.0 centerOfMass [ 0 0 0.04 ] }
+  controller "ugv_controller"
+}
+
+# MISSION SUPERVISOR
+Robot {
+  name "mission_supervisor"
+  supervisor TRUE
+  controller "supervisor_controller"
+}

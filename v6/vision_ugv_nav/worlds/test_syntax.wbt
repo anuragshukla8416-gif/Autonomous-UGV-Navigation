@@ -1,0 +1,144 @@
+#VRML_SIM R2025a utf8
+
+WorldInfo {
+  info [
+    "Vision-Based Autonomous Navigation for UGV in Outdoor Environment"
+    "GPS-Denied Outdoor Navigation Challenge"
+  ]
+  title "Vision UGV Outdoor Challenge"
+  basicTimeStep 16
+  coordinateSystem "ENU"
+}
+
+Viewpoint {
+  orientation 0.25 0.45 -0.85 1.1
+  position -16 -16 12
+}
+
+DirectionalLight {
+  ambientIntensity 0.35
+  color 1 0.98 0.92
+  direction 0.6 0.4 -0.7
+  intensity 2.5
+  castShadows TRUE
+}
+
+PointLight {
+  ambientIntensity 0.2
+  color 0.8 0.9 1.0
+  location 0 0 15
+  intensity 1.2
+}
+
+# Main Grass Ground
+DEF GROUND Solid {
+  translation 0 0 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.55 0.2
+        baseColorMap ImageTexture {
+          url [ "../assets/textures/grass.png" ]
+        }
+        roughness 0.9
+        metalness 0
+        textureTransform TextureTransform {
+          scale 20 20
+        }
+      }
+      geometry Box {
+        size 36 36 0.1
+      }
+    }
+  ]
+  boundingObject Box {
+    size 36 36 0.1
+  }
+  locked TRUE
+}
+
+# Boundary Walls
+DEF NORTH_WALL Solid {
+  translation 0 18 0.5
+  children [
+    DEF WALL_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.4 0.35 0.3
+        roughness 1.0
+      }
+      geometry Box { size 36 0.4 1.0 }
+    }
+  ]
+  boundingObject USE WALL_SHAPE
+}
+
+DEF SOUTH_WALL Solid {
+  translation 0 -18 0.5
+  children [ USE WALL_SHAPE ]
+  boundingObject USE WALL_SHAPE
+}
+
+DEF EAST_WALL Solid {
+  translation 18 0 0.5
+  children [
+    DEF WALL_SIDE Shape {
+      appearance PBRAppearance {
+        baseColor 0.4 0.35 0.3
+        roughness 1.0
+      }
+      geometry Box { size 0.4 36 1.0 }
+    }
+  ]
+  boundingObject USE WALL_SIDE
+}
+
+DEF WEST_WALL Solid {
+  translation -18 0 0.5
+  children [ USE WALL_SIDE ]
+  boundingObject USE WALL_SIDE
+}
+
+# START BEACON (Point A)
+DEF BEACON_A Solid {
+  translation -10 -8 0.06
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.1 0.9 0.2
+        emissiveColor 0.1 0.9 0.2
+        roughness 0.2
+      }
+      geometry Cylinder {
+        radius 0.9
+        height 0.02
+      }
+    }
+  ]
+  name "beacon_a"
+}
+
+# GOAL BEACON (Point B)
+DEF BEACON_B Solid {
+  translation 10 8 0.06
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.1 0.6 1.0
+        emissiveColor 0.1 0.6 1.0
+        roughness 0.2
+      }
+      geometry Cylinder {
+        radius 0.9
+        height 0.02
+      }
+    }
+  ]
+  name "beacon_b"
+}
+
+# SUPERVISOR ROBOT
+Robot {
+  name "mission_supervisor"
+  supervisor TRUE
+  controller "<none>"
+}

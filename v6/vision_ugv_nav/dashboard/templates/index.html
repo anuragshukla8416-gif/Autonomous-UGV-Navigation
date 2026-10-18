@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision UGV | Autonomous Mission Control</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="mission-header">
+      <div class="brand">
+        <div class="pulse-indicator"></div>
+        <div class="brand-title">
+          <h1>VISION UGV // MISSION CONTROL</h1>
+          <span class="subtitle">GPS-DENIED AUTONOMOUS NAVIGATION // THETA* + DWA + MiDaS + YOLOv8 PIPELINE</span>
+        </div>
+      </div>
+      <div class="header-badges">
+        <div class="badge status-badge" id="badge-status">INITIALIZING</div>
+        <div class="badge gps-badge">GPS: <span class="text-danger">DENIED (VISION ONLY)</span></div>
+        <div class="badge planner-badge">PLANNER: <span class="text-highlight">THETA* ANY-ANGLE</span></div>
+        <div class="badge time-badge">SIM TIME: <span id="val-time">0.00s</span></div>
+      </div>
+    </header>
+
+    <!-- Main Viewport (Designed for zero-scroll 100vh fit) -->
+    <main class="dashboard-grid">
+      <!-- LEFT COLUMN -->
+      <div class="dashboard-col">
+        <!-- Panel 1: Multi-Camera Vision & MiDaS Perception HUD -->
+        <section class="panel vision-panel">
+          <div class="panel-header">
+            <h2><span class="icon">👁</span> VISION PERCEPTION & MULTI-CAMERA RIG</h2>
+            <div class="cam-tabs">
+              <button class="cam-tab active" data-cam="fwd" onclick="switchCamera('fwd')">FORWARD (YOLO)</button>
+              <button class="cam-tab" data-cam="midas" onclick="switchCamera('midas')">🌈 MiDaS DEPTH</button>
+              <button class="cam-tab" data-cam="left" onclick="switchCamera('left')">◀ LEFT (+45°)</button>
+              <button class="cam-tab" data-cam="right" onclick="switchCamera('right')">▶ RIGHT (-45°)</button>
+              <button class="cam-tab" data-cam="quad" onclick="switchCamera('quad')">🔲 QUAD</button>
+            </div>
+          </div>
+          <div class="canvas-container vision-container" id="vision-frame-container">
+            <!-- Single Camera Active View -->
+            <img id="live-camera-img" src="/static/img/live_camera.jpg" alt="Active Camera Feed" onerror="handleCamImgError(this)" />
+            
+            <!-- Quad Multi-Camera Grid View (Hidden by default) -->
+            <div id="quad-camera-grid" class="quad-grid" style="display: none;">
+              <div class="quad-cell">
+                <span class="quad-label">CAM 1: FWD YOLO</span>
+                <img id="quad-img-fwd" src="/static/img/live_camera.jpg" alt="Forward" />
+              </div>
+              <div class="quad-cell">
+                <span class="quad-label">CAM 2: MiDaS INFERNO</span>
+                <img id="quad-img-midas" src="/static/img/midas_depth.jpg" alt="MiDaS" />
+              </div>
+              <div class="quad-cell">
+                <span class="quad-label">CAM 3: LEFT FLANK (+45°)</span>
+                <img id="quad-img-left" src="/static/img/live_camera_left.jpg" alt="Left" />
+              </div>
+              <div class="quad-cell">
+                <span class="quad-label">CAM 4: RIGHT FLANK (-45°)</span>
+                <img id="quad-img-right" src="/static/img/live_camera_right.jpg" alt="Right" />
+              </div>
+            </div>
+
+            <canvas id="vision-canvas" width="480" height="340" style="display: none;"></canvas>
+            <div class="hud-overlay" id="vision-hud-overlay">
+              <div class="hud-tag top-left" id="hud-cam-info">CAM: 320x240 | 4-CAM RIG | MiDaS ACTIVE</div>
+              <div class="hud-tag top-right" id="corridor-alert">CORRIDOR: CLEAR</div>
+              <div class="hud-tag bottom-left">
+                <span class="legend-dot rock-dot"></span> ROCK
+                <span class="legend-dot tree-dot"></span> TREE
+                <span class="legend-dot hazard-dot"></span> HAZARD
+                <span class="legend-dot goal-dot"></span> GOAL (B)
+              </div>
+              <div class="hud-tag bottom-right" id="hud-closest-obs">YOLO: 0 DETECTIONS</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 2: Waypoint Configuration & Dynamic Mission Dispatch -->
+        <section class="panel waypoint-panel">
+          <div class="panel-header">
+            <h2><span class="icon">🎯</span> WAYPOINT CONFIGURATION & IN-FLIGHT DISPATCH</h2>
+            <span class="tag tag-blue" id="retarget-status-badge">⚡ IN-FLIGHT READY</span>
+          </div>
+          <div class="waypoint-content">
+            <!-- Coordinates Form -->
+            <div class="waypoint-inputs-row">
+              <div class="coord-group">
+                <div class="coord-header">
+                  <span class="coord-title">START WAYPOINT</span>
+                  <span class="coord-badge" id="badge-start-state">ACTIVE</span>
+                </div>
+                <div class="coord-inputs">
+                  <label>X <input type="number" id="inp-start-x" step="0.5" value="-10.0" oninput="onWaypointInputChange()" /></label>
+                  <label>Y <input type="number" id="inp-start-y" step="0.5" value="-8.0" oninput="onWaypointInputChange()" /></label>
+                </div>
+              </div>
+              <div class="coord-group">
+                <div class="coord-header">
+                  <span class="coord-title">DESTINATION GOAL</span>
+                  <span class="coord-badge target" id="badge-goal-state">TARGET</span>
+                </div>
+                <div class="coord-inputs">
+                  <label>X <input type="number" id="inp-goal-x" step="0.5" value="10.0" oninput="onWaypointInputChange()" /></label>
+                  <label>Y <input type="number" id="inp-goal-y" step="0.5" value="8.0" oninput="onWaypointInputChange()" /></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Route Presets -->
+            <div class="presets-row">
+              <span class="presets-label">ROUTE PRESETS:</span>
+              <button class="btn-preset active" id="preset-1" onclick="setPreset(-10.0, -8.0, 10.0, 8.0, this)">Point A → B (Default)</button>
+              <button class="btn-preset" id="preset-2" onclick="setPreset(10.0, 8.0, -10.0, -8.0, this)">Point B → A (Reverse)</button>
+              <button class="btn-preset" id="preset-3" onclick="setPreset(-10.0, 8.0, 10.0, -8.0, this)">Cross Field (C → D)</button>
+              <button class="btn-preset" id="preset-4" onclick="setPreset(-6.0, -4.0, 6.0, 4.0, this)">Obstacle Gauntlet</button>
+            </div>
+
+            <!-- Mode Selection & Dispatch Button -->
+            <div class="dispatch-controls-row">
+              <div class="retarget-mode-box">
+                <label class="radio-label">
+                  <input type="radio" name="dispatch-mode" id="rad-inflight" value="inflight" checked />
+                  <span>⚡ Dynamic In-Flight Retarget (Keep Moving)</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="dispatch-mode" id="rad-teleport" value="teleport" />
+                  <span>🔁 Teleport UGV to Start</span>
+                </label>
+              </div>
+              <button class="btn btn-dispatch" onclick="dispatchMission()">
+                🚀 DISPATCH MISSION (THETA* REPLAN)
+              </button>
+            </div>
+
+            <!-- Tactical Actions Toolbar -->
+            <div class="tactical-actions-toolbar">
+              <button id="btn-inject-obstacle" class="btn btn-hazard" onclick="triggerObstacleInjection()">
+                ⚠️ INJECT SUDDEN OBSTACLE (LIVE DEMO)
+              </button>
+              <button class="btn btn-secondary" onclick="sendCmd('reset')">
+                🔄 RESET SIMULATION
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="dashboard-col">
+        <!-- Panel 3: 2D Tactical Radar with Dynamic Viewport -->
+        <section class="panel map-panel">
+          <div class="panel-header">
+            <h2><span class="icon">📡</span> 2D TACTICAL RADAR // DYNAMIC VIEWPORT</h2>
+            <div class="radar-header-controls">
+              <div class="mode-toggles">
+                <button class="mode-toggle-btn active" id="btn-zoom-fit" onclick="setViewportMode('fit')">🎯 FIT ARENA</button>
+                <button class="mode-toggle-btn" id="btn-zoom-chase" onclick="setViewportMode('chase')">🚗 CHASE UGV</button>
+              </div>
+              <div class="view-toggles">
+                <button class="view-toggle-btn active" id="btn-view-radar" onclick="setRadarView('radar')">📡 VECTOR RADAR</button>
+                <button class="view-toggle-btn" id="btn-view-hazard" onclick="setRadarView('hazard')">⚠️ THREAT CONTOUR</button>
+              </div>
+            </div>
+          </div>
+          <div class="canvas-container" id="radar-canvas-container">
+            <canvas id="radar-canvas"></canvas>
+            <div class="map-legend">
+              <span><span class="legend-line astar-line"></span> Theta* Spline</span>
+              <span><span class="legend-line dwa-line"></span> DWA Rollout</span>
+              <span><span class="legend-line est-line"></span> Tracked Pose</span>
+              <span><span class="legend-line preview-line"></span> Waypoint Preview</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 4: Telemetry Kinematics & Real-Time Event Stream (Zero Scroll Fit) -->
+        <section class="panel right-bottom-panel">
+          <!-- Quick Kinematics Bar -->
+          <div class="kinematics-bar">
+            <div class="k-stat">
+              <span class="k-label">SPEED</span>
+              <span class="k-val"><span id="val-speed">0.00</span> <small>m/s</small></span>
+              <div class="k-track"><div class="k-fill" id="bar-speed"></div></div>
+            </div>
+            <div class="k-stat">
+              <span class="k-label">HEADING</span>
+              <span class="k-val"><span id="val-heading">0.0</span> <small>deg</small></span>
+              <div class="k-track"><div class="k-fill" id="bar-heading"></div></div>
+            </div>
+            <div class="k-stat">
+              <span class="k-label">DIST TO GOAL</span>
+              <span class="k-val"><span id="val-dist-goal">26.00</span> <small>m</small></span>
+              <div class="k-track"><div class="k-fill" id="bar-goal"></div></div>
+            </div>
+            <div class="k-stat">
+              <span class="k-label">EKF RMSE</span>
+              <span class="k-val text-success"><span id="val-rmse">0.00</span> <small>m</small></span>
+            </div>
+            <div class="k-stat">
+              <span class="k-label">REPLANS</span>
+              <span class="k-val text-highlight" id="val-replans">0</span>
+            </div>
+            <div class="k-stat">
+              <span class="k-label">COLLISIONS</span>
+              <span class="k-val text-success" id="val-collisions">0</span>
+            </div>
+          </div>
+
+          <!-- Real-Time Event Stream In-Viewport -->
+          <div class="event-stream-container">
+            <div class="event-stream-header">
+              <div class="event-stream-title">
+                <span class="live-dot"></span>
+                <span>REAL-TIME DETECTION & MISSION EVENT STREAM</span>
+              </div>
+              <div class="event-stream-actions">
+                <span class="tag tag-live" id="log-status-tag">LIVE FEED</span>
+                <button class="btn-popup-log" onclick="openLogModal()" title="Open Full-Screen Popup Log">↗ POPUP LOG</button>
+              </div>
+            </div>
+            <div class="event-log-container" id="event-log-container">
+              <div class="log-entry log-sys">[00.0s] SYSTEM ONLINE // GPS-Denied Autonomous Vision UGV</div>
+              <div class="log-entry log-sys">[00.2s] MULTI-CAMERA ARRAY ACTIVE // 4 Cameras + MiDaS Depth Estimator</div>
+              <div class="log-entry log-sys">[00.5s] THETA* ANY-ANGLE PLANNER // Initial global path synthesized</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Floating Full-Screen Pop-up Modal for Event Stream -->
+    <div id="log-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3><span class="icon">📜</span> MISSION EVENT STREAM // FULL AUDIT LOG</h3>
+          <button class="btn-close-modal" onclick="closeLogModal()">✕ CLOSE</button>
+        </div>
+        <div class="modal-body" id="modal-log-container">
+          <!-- Cloned or synced logs will render here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mission-footer">
+      <span>AUTONOMOUS MOBILE ROBOTICS LAB // WEBOTS R2025a OUTDOOR MISSION</span>
+      <span>PERCEPTION: YOLOv8 + MiDaS MONOCULAR DEPTH // PLANNING: THETA* (ANY-ANGLE) + DWA // MULTI-CAM ARRAY</span>
+    </footer>
+  </div>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
